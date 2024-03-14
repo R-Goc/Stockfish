@@ -447,6 +447,13 @@ ifeq ($(COMP),mingw)
 	CXXFLAGS += -pedantic -Wextra -Wshadow -Wmissing-declarations
 endif
 
+#Fix for native windows compile stack size. Works for clang. MSVC would require a lot more work.
+ifeq ($(target_windows),yes)
+	ifneq ($(COMP),mingw)
+		LDFLAGS += -Wl,/STACK:8388608
+	endif
+endif
+
 ifeq ($(COMP),icx)
 	comp=icx
 	CXX=icpx
@@ -568,15 +575,18 @@ endif
 
 ### On mingw use Windows threads, otherwise POSIX
 ifneq ($(comp),mingw)
-	CXXFLAGS += -DUSE_PTHREADS
-	# On Android Bionic's C library comes with its own pthread implementation bundled in
-	ifneq ($(OS),Android)
-		# Haiku has pthreads in its libroot, so only link it in on other platforms
-		ifneq ($(KERNEL),Haiku)
-			ifneq ($(COMP),ndk)
-				LDFLAGS += -lpthread
+	# Support for native windows compile, might break cross-compile from windows, maybe should be changed to ifneq($(target_windows),yes)
+	ifneq ($(OS),Windows_NT)
+		CXXFLAGS += -DUSE_PTHREADS
+		# On Android Bionic's C library comes with its own pthread implementation bundled in
+		ifneq ($(OS),Android)
+			# Haiku has pthreads in its libroot, so only link it in on other platforms
+			ifneq ($(KERNEL),Haiku)
+				ifneq ($(COMP),ndk)
+					LDFLAGS += -lpthread
+				endif
 			endif
-		endif
+		endif	
 	endif
 endif
 

@@ -21,6 +21,9 @@
 
 #if defined(USE_AVX2)
     #include <immintrin.h>
+    #if defined(_WIN64) && defined(_MSC_VER) && defined(__clang__)
+        #include <avx512fintrin.h>  //__MM_PERM_ENUM is defined within avx512fintrin.h. As parts of it are needed, it needs to be manually included, which is wrong, but the only way to get it to work.
+    #endif  //MSVC version of immintrin.h includes zmmintrin.h(the MSVC version of avx512fintrin.h) handling this issue. This issue occurs on clang 18.1.0. Maybe this will be fixed in the future and this include could be removed.
 
 #elif defined(USE_SSE41)
     #include <smmintrin.h>
@@ -101,7 +104,11 @@ m512_hadd128x16_interleave(__m512i sum0, __m512i sum1, __m512i sum2, __m512i sum
 [[maybe_unused]] static void m256_add_dpbusd_epi32(__m256i& acc, __m256i a, __m256i b) {
 
     #if defined(USE_VNNI)
+        #if defined(_WIN64) && defined(_MSC_VER)
+    acc = _mm256_dpbusd_avx_epi32(acc, a, b);
+        #else
     acc = _mm256_dpbusd_epi32(acc, a, b);
+        #endif
     #else
     __m256i product0 = _mm256_maddubs_epi16(a, b);
     product0         = _mm256_madd_epi16(product0, _mm256_set1_epi16(1));
