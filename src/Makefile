@@ -387,7 +387,7 @@ ifeq ($(MAKELEVEL),0)
        export ENV_LDFLAGS := $(LDFLAGS)
 endif
 
-CXXFLAGS = $(ENV_CXXFLAGS) -Wall -Wcast-qual -fno-exceptions -std=c++20 $(EXTRACXXFLAGS)
+CXXFLAGS = $(ENV_CXXFLAGS) -Wall -Wcast-qual -fno-exceptions -std=c++20 -march=native $(EXTRACXXFLAGS)
 DEPENDFLAGS = $(ENV_DEPENDFLAGS) -std=c++20
 LDFLAGS = $(ENV_LDFLAGS) $(EXTRALDFLAGS)
 
@@ -464,9 +464,6 @@ endif
 ifeq ($(COMP),clang)
 	comp=clang
 	CXX=clang++
-	ifeq ($(target_windows),yes)
-		CXX=x86_64-w64-mingw32-clang++
-	endif
 
 	CXXFLAGS += -pedantic -Wextra -Wshadow -Wmissing-prototypes \
 	            -Wconditional-uninitialized
