@@ -42,6 +42,21 @@ Stockfish with it.
 
 See also the Stockfish [documentation][wiki-usage-link] for further usage help.
 
+## Notes regarding this fork
+
+This for introduces support for native compilation of stockfish on windows using clang. No support for msvc is intended. 
+The C++ standard was bumped up too C++ 20 to avoid an issue with the llvm/clang immintrin.h header which on windows will not include certain subheaders otherwise. 
+It appears that this issue will not be fixed. The other solution to this is not elegant and involves manually including these subheaders.
+As such a minimum of Clang 10 should work, though it is only tested with clang 17 and 18. Clang 9 and earlier used a different option to enable C++ 20 support so are sure not to work.
+Make needs to be installed on the system and be in PATH to compile the binary.
+The automatic determination of cpu features doesn't work on my system, I haven't looked into why yet.
+The compile command is:
+  * make -j profile-build ARCH=YOUR-ARCH COMP=clang
+You can use build instead of profile-build but this will make the binary slower.
+Run make with no target to see the available architectures.
+As this fork was made to increase the speed of the binary, a defualt -march=native was added to the Makefile. As such the binary probably won't work on other machines than the one it was compiled on.
+
+
 ## Files
 
 This distribution of Stockfish consists of the following files:
