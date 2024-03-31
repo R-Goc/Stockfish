@@ -52,6 +52,7 @@ Make needs to be installed on the system and be in PATH to compile the binary.
 The automatic determination of cpu features doesn't work on my system, I haven't looked into why yet.
 The compile command is:
   * make -j profile-build ARCH=YOUR-ARCH COMP=clang
+
 You can use build instead of profile-build but this will make the binary slower.
 Run make with no target to see the available architectures.
 As this fork was made to increase the speed of the binary, a defualt -march=native was added to the Makefile. As such the binary probably won't work on other machines than the one it was compiled on.
