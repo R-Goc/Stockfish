@@ -195,10 +195,11 @@ bool Network<Arch, Transformer>::save(const std::optional<std::string>& filename
 }
 
 template<typename Arch, typename Transformer>
-Value Network<Arch, Transformer>::evaluate(const Position& pos,
-                                           bool            adjusted,
-                                           int*            complexity,
-                                           bool            psqtOnly) const {
+Value Network<Arch, Transformer>::evaluate(const Position&                         pos,
+                                           AccumulatorCaches::Cache<FTDimensions>* cache,
+                                           bool                                    adjusted,
+                                           int*                                    complexity,
+                                           bool                                    psqtOnly) const {
     // We manually align the arrays on the stack because with gcc < 9.3
     // overaligning stack variables with alignas() doesn't work correctly.
 
