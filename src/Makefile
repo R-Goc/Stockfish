@@ -465,6 +465,7 @@ ifeq ($(COMP),clang)
 	comp=clang
 	CXX=clang++
 
+	strip=llvm-strip
 	CXXFLAGS += -pedantic -Wextra -Wshadow -Wmissing-prototypes \
 	            -Wconditional-uninitialized
 
