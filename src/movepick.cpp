@@ -178,7 +178,7 @@ void MovePicker::score() {
             Square    to   = m.to_sq();
 
             // histories
-            m.value = 2 * (*mainHistory)[pos.side_to_move()][m.from_to()];
+            m.value = (*mainHistory)[pos.side_to_move()][m.from_to()];
             m.value += 2 * (*pawnHistory)[pawn_structure_index(pos)][pc][to];
             m.value += 2 * (*continuationHistory[0])[pc][to];
             m.value += (*continuationHistory[1])[pc][to];
@@ -199,8 +199,7 @@ void MovePicker::score() {
             // malus for putting piece en prise
             m.value -= (pt == QUEEN  ? bool(to & threatenedByRook) * 49000
                         : pt == ROOK ? bool(to & threatenedByMinor) * 24335
-                        : pt != PAWN ? bool(to & threatenedByPawn) * 14950
-                                     : 0);
+                                     : bool(to & threatenedByPawn) * 14900);
         }
 
         else  // Type == EVASIONS
