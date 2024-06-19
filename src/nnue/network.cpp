@@ -44,9 +44,28 @@ namespace {
 //     const unsigned char *const gEmbeddedNNUEEnd;     // a marker to the end
 //     const unsigned int         gEmbeddedNNUESize;    // the size of the embedded file
 // Note that this does not work in Microsoft Visual Studio.
-#if !defined(_MSC_VER) && !defined(NNUE_EMBEDDING_OFF)
+#if (!defined(_MSC_VER) || defined(__clang__)) && !defined(NNUE_EMBEDDING_OFF)
+
+    // Preprocessor embed supported from clang 19 and GCC TODO
+    #if defined(__cpp_pp_embed)
+
+const unsigned char gEmbeddedNNUEBigData[] = {
+        #embed EvalFileDefaultNameBig
+};
+const unsigned int         gEmbeddedNNUEBigSize = std::size(gEmbeddedNNUEBigData);
+const unsigned char* const gEmbeddedNNUEBigEnd  = &gEmbeddedNNUEBigData[gEmbeddedNNUEBigSize - 1];
+
+const unsigned char gEmbeddedNNUESmallData[] = {
+        #embed EvalFileDefaultNameSmall
+};
+const unsigned int         gEmbeddedNNUESmallSize = std::size(gEmbeddedNNUESmallData);
+const unsigned char* const gEmbeddedNNUESmallEnd =
+  &gEmbeddedNNUESmallData[gEmbeddedNNUESmallSize - 1];
+
+    #else
 INCBIN(EmbeddedNNUEBig, EvalFileDefaultNameBig);
 INCBIN(EmbeddedNNUESmall, EvalFileDefaultNameSmall);
+    #endif
 #else
 const unsigned char        gEmbeddedNNUEBigData[1]   = {0x0};
 const unsigned char* const gEmbeddedNNUEBigEnd       = &gEmbeddedNNUEBigData[1];
