@@ -37,42 +37,39 @@
 #include "nnue_misc.h"
 
 namespace {
-// Macro to embed the default efficiently updatable neural network (NNUE) file
-// data in the engine binary (using incbin.h, by Dale Weiler).
-// This macro invocation will declare the following three variables
-//     const unsigned char        gEmbeddedNNUEData[];  // a pointer to the embedded data
-//     const unsigned char *const gEmbeddedNNUEEnd;     // a marker to the end
-//     const unsigned int         gEmbeddedNNUESize;    // the size of the embedded file
-// Note that this does not work in Microsoft Visual Studio.
-#if (!defined(_MSC_VER) || defined(__clang__)) && !defined(NNUE_EMBEDDING_OFF)
-
-    // Preprocessor embed supported from clang 19 and GCC TODO
-    #if defined(__cpp_pp_embed)
-
+// Preprocessor embed supported from Clang 19 and GCC 15
+#if defined(__cpp_pp_embed) && !defined(NNUE_EMBEDDING_OFF)
 const unsigned char gEmbeddedNNUEBigData[] = {
-        #embed EvalFileDefaultNameBig
+    #embed EvalFileDefaultNameBig
 };
 const unsigned int         gEmbeddedNNUEBigSize = std::size(gEmbeddedNNUEBigData);
 const unsigned char* const gEmbeddedNNUEBigEnd  = &gEmbeddedNNUEBigData[gEmbeddedNNUEBigSize - 1];
 
 const unsigned char gEmbeddedNNUESmallData[] = {
-        #embed EvalFileDefaultNameSmall
+    #embed EvalFileDefaultNameSmall
 };
 const unsigned int         gEmbeddedNNUESmallSize = std::size(gEmbeddedNNUESmallData);
 const unsigned char* const gEmbeddedNNUESmallEnd =
   &gEmbeddedNNUESmallData[gEmbeddedNNUESmallSize - 1];
-
-    #else
+#else
+    // Macro to embed the default efficiently updatable neural network (NNUE) file
+    // data in the engine binary (using incbin.h, by Dale Weiler).
+    // This macro invocation will declare the following three variables
+    //     const unsigned char        gEmbeddedNNUEData[];  // a pointer to the embedded data
+    //     const unsigned char *const gEmbeddedNNUEEnd;     // a marker to the end
+    //     const unsigned int         gEmbeddedNNUESize;    // the size of the embedded file
+    // Note that this does not work in Microsoft Visual Studio.
+    #if (!defined(_MSC_VER) || defined(__clang__)) && !defined(NNUE_EMBEDDING_OFF)
 INCBIN(EmbeddedNNUEBig, EvalFileDefaultNameBig);
 INCBIN(EmbeddedNNUESmall, EvalFileDefaultNameSmall);
-    #endif
-#else
+    #else
 const unsigned char        gEmbeddedNNUEBigData[1]   = {0x0};
 const unsigned char* const gEmbeddedNNUEBigEnd       = &gEmbeddedNNUEBigData[1];
 const unsigned int         gEmbeddedNNUEBigSize      = 1;
 const unsigned char        gEmbeddedNNUESmallData[1] = {0x0};
 const unsigned char* const gEmbeddedNNUESmallEnd     = &gEmbeddedNNUESmallData[1];
 const unsigned int         gEmbeddedNNUESmallSize    = 1;
+    #endif
 #endif
 
 struct EmbeddedNNUE {
