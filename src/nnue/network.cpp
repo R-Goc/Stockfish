@@ -38,7 +38,12 @@
 
 namespace {
 // Preprocessor embed supported from Clang 19 and GCC 15
-#if defined(__cpp_pp_embed) && !defined(NNUE_EMBEDDING_OFF)
+#ifndef __has_embed
+    #define __has_embed(x) 0
+#endif
+
+#if __has_embed(EvalFileDefaultNameBig) && __has_embed(EvalFileDefaultNameSmall) \
+  && !defined(NNUE_EMBEDDING_OFF)
 const unsigned char gEmbeddedNNUEBigData[] = {
     #embed EvalFileDefaultNameBig
 };
