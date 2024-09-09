@@ -21,7 +21,9 @@
 
 #if defined(USE_AVX2)
     #include <immintrin.h>
-
+    #if defined(__clang__) && defined(_MSC_VER)
+        #include <avx512fintrin.h>
+    #endif  // DEBUG
 #elif defined(USE_SSE41)
     #include <smmintrin.h>
 
